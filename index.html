@@ -13,31 +13,20 @@
       <h1>WHICH BEYONCE</h1>
     </header>
     <main id="main-parent">
-      <section class="main-introsection-player-input">
+      <section class="main-introsection-player-input" id="main-intro-parentsection">
         <div class="introsection-form-parentdiv">
           <form class="introsection-player-form">
-            <input class="introform-player-input" maxlength="32"></input>
+            <input class="introform-player-input" id="player1-name-input" maxlength="32" placeholder="Enter Name..."></input>
             <p class="introform-player-name-fixed">PLAYER 1</p>
           </form>
           <form class="introsection-player-form">
-            <input class="introform-player-input" maxlength="32"></input>
+            <input class="introform-player-input" maxlength="32" placeholder="Enter Name..."></input>
             <p class="introform-player-name-fixed">PLAYER 2</p>
           </form>
         </div>
-        <button class="playgame-button">PLAY GAME</button>
+        <div class="" id="introform-error-message"></div>
+        <button class="playgame-button intro-playgame-button" id="intro-playgame-button">PLAY GAME</button>
       </section>
-      <!-- <section class="main-instruction-section">
-        <h2 class="instruction-section-header">WELCOME<span>PLAYER 1 NAME</span> and <span>PLAYER 2 NAME</span> !</h2>
-        <p class="instruction-section-paragraph">The goal of the game is to find all 5 pairs of cards as quickly as possible.
-        The player that finds the greatest numbers of pairs, wins.</p>
-        <p class="instruction-section-paragraph">To begin playing, the player whose name is highlighted can click any card in the card
-        pile. It will flip over and reveal a picture of Beyonce. Click another card. If they match, they will disappear and you will
-        have completed a match! If they don't, you'll have three seconds to look at them before they flip back over. Then it's time
-        for the other player to try!</p>
-        <p class="instruction-section-paragraph">After youy play, you'll see the name of the final winnner and how long it took to
-        win the game.</p>
-        <button class="playgame-button">PLAY GAME </button>
-      </section> -->
       <!-- <section class="main-gameplay-parentsection">
         <aside class="gameplay-player-info-section">
           <div class="player-info-name">
@@ -83,5 +72,8 @@
         </aside>
       </section> -->
     </main>
+  <script src="deck.js"></script>
+  <script src="card.js"></script>
+  <script src="main.js"></script>
   </body>
 </html>
