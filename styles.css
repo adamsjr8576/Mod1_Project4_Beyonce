@@ -32,9 +32,8 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: url(images/beyonce-COB-bw.png);
-  background-size: 150%;
-  background-color: rgba(1, 1, 1, 0.1);
+  background-image: url(images/BG2.png);
+  background-size: 100%;
   background-position: center;
   height: 700px;
   padding: 10px;
@@ -112,6 +111,11 @@ margin-bottom: 75px;
   font-size: 175%;
 }
 
+.instructop-paragraph-background {
+  background-color: rgba(250, 250, 250, .6);
+  padding: 10px;
+}
+
 .instruction-section-paragraph {
   margin: 20px 0;
   font-size: 125%;
@@ -124,7 +128,7 @@ margin-bottom: 75px;
   margin-top: 30px;
   width: 97%;
   display: flex;
-  height: 100%;
+  height: 97%;
   background-color: #F1F1F1;
 }
 
@@ -185,6 +189,7 @@ margin-bottom: 75px;
   width: 60%;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
 }
 
@@ -196,14 +201,20 @@ margin-bottom: 75px;
   width: 90%;
 }
 
-.gameply-card {
+.gameplay-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: 160px;
   width: 120px;
-  font-size: 700%;
+  font-size: 400%;
   font-weight: 700;
   border: 2px solid black;
   background-color: white;
-  text-align: center;
+}
+
+.hidden {
+  visibility: hidden;
 }
 
 .position1 {
@@ -214,6 +225,9 @@ margin-bottom: 75px;
   transform: rotate(20deg);
 }
 
+.position3 {
+  transform: rotate(15deg);
+}
 
 .position4 {
   transform: rotate(15deg);
@@ -242,4 +256,63 @@ margin-bottom: 75px;
 
 .position10 {
   transform: rotate(-10deg);
+}
+
+.photo1 {
+  background-image: url('images/CNP.jpg');
+  background-position: center;
+  background-size: cover;
+}
+
+.photo2 {
+  background-image: url('images/GSMNP.jpg');
+  background-position: center;
+  background-size: cover;
+}
+
+.photo3 {
+  background-image: url('images/LVNP.jpg');
+  background-position: center;
+  background-size: cover;
+}
+
+.photo4 {
+  background-image: url('images/RMNP.jpg');
+  background-position: center;
+  background-size: cover;
+}
+
+.photo5 {
+  background-image: url('images/ZNP.jpg');
+  background-position: center;
+  background-size: cover;
+}
+
+/* WINNER CARD */
+
+.winner-card-div {
+  background-color: #A0B8D5;
+  width: 80%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 5px solid #4171AB;
+}
+
+.winner-card-h2 {
+  text-align: center;
+  padding: 10px;
+  font-size: 250%;
+  width: 90%;
+  border-bottom: 5px solid #4171AB;
+}
+
+.winner-card-h4 {
+  text-align: center;
+  padding-bottom: 10px;
+  font-size: 150%;
+  margin: 20px;
+  width: 90%;
+  border-bottom: 5px solid #4171AB;
 }
