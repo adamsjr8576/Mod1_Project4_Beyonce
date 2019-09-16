@@ -110,14 +110,31 @@ function createWinnerCard(player) {
   </div>`;
 }
 
+function addWinnerToLS(winner) {
+  var winnersToParse = localStorage.getItem("winner");
+  winnersFromLS = JSON.parse(winnersToParse);
+  var gameTime = getGameTime();
+  var newWinner = [{name: winner.value, time: gameTime}];
+  if (winnersFromLS === null) {
+    var winnerToStore = JSON.stringify(newWinner);
+    localStorage.setItem("winner", winnerToStore);
+  } else {
+    winnersFromLS = winnersFromLS.concat(newWinner);
+    var winnersToStore = JSON.stringify(winnersFromLS);
+    localStorage.setItem("winner", winnersToStore);
+  }
+}
+
 function displayWinner() {
   var cardSection = document.getElementById('card-section');
   if (deck.matches === 5 && deck.player1Matches > deck.player2Matches) {
     removeCardSection();
     cardSection.innerHTML = createWinnerCard(player1NameInput);
+    addWinnerToLS(player1NameInput);
   } else if(deck.matches === 5 && deck.player1Matches < deck.player2Matches) {
     removeCardSection();
     cardSection.innerHTML = createWinnerCard(player2NameInput);
+    addWinnerToLS(player2NameInput);
   }
 }
 
