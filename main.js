@@ -1,9 +1,4 @@
-var player1NameInput = document.getElementById('player1-name-input');
-var player2NameInput = document.getElementById('player2-name-input');
-var playGameButton1 = document.getElementById('intro-playgame-button');
-var introParentSection = document.getElementById('main-intro-parentsection');
 var mainParent = document.getElementById('main-parent');
-var introErrorMessage = document.getElementById('introform-error-message');
 var scoreCardButton = document.getElementById('scorecard-button');
 var headerParent = document.getElementById('header-parent');
 var cardsArray = [
@@ -24,20 +19,42 @@ window.addEventListener('load', onPageLoad);
 scoreCardButton.addEventListener('click', showAndRemoveScoreCard);
 
 function onPageLoad() {
-  if("winner" in localStorage) {
-    createScoreCard();
-  }
+createPlayerFormHTML();
+createScoreCard();
 }
 
 function clickInMain() {
-  makeErrorIfNoName();
-  saveUserNamesLS();
-  instantiateCardAndDeck();
-  recreateCardsAtRandom()
-  flipCard();
+  makeErrorIfNoName(event);
+  saveUserNamesLS(event);
+  instantiateCardAndDeck(event);
+  recreateCardsAtRandom(event)
+  flipCard(event);
+  resetGame(event);
 }
 
-function makeErrorIfNoName() {
+function createPlayerFormHTML() {
+  mainParent.innerHTML = `
+  <section class="main-introsection-player-input" id="main-intro-parentsection">
+    <div class="introsection-form-parentdiv">
+      <form class="introsection-player-form">
+        <input class="introform-player-input" id="player1-name-input" maxlength="32" placeholder="Enter Name..."></input>
+        <p class="introform-player-name-fixed">PLAYER 1</p>
+      </form>
+      <form class="introsection-player-form">
+        <input class="introform-player-input" id="player2-name-input" maxlength="32" placeholder="Enter Name..."></input>
+        <p class="introform-player-name-fixed">PLAYER 2</p>
+      </form>
+    </div>
+    <div class="" id="introform-error-message"></div>
+    <button class="playgame-button intro-playgame-button" id="intro-playgame-button">PLAY GAME</button>
+  </section>`;
+}
+
+
+function makeErrorIfNoName(event) {
+  var player1NameInput = document.getElementById('player1-name-input');
+  var player2NameInput = document.getElementById('player2-name-input');
+  var introErrorMessage = document.getElementById('introform-error-message');
   if (event.target.classList.contains('intro-playgame-button')) {
     if (player1NameInput.value === "" || player2NameInput.value === "") {
       player1NameInput.classList.add('error-state');
@@ -45,27 +62,38 @@ function makeErrorIfNoName() {
       introErrorMessage.classList.add('introform-no-input-error');
       introErrorMessage.innerHTML = "PLEASE ENTER YOUR NAME!!!"
     } else {
+      instantiatePlayer1(player1NameInput);
+      instantiatePlayer2(player2NameInput);
       moveToInstructionPage();
     }
   }
 }
 
-function saveUserNamesLS() {
+function instantiatePlayer1(player) {
+  player1 = new Player(player.value);
+}
+
+function instantiatePlayer2(player) {
+  player2 = new Player(player.value);
+}
+
+function saveUserNamesLS(event) {
   if (event.target.classList.contains('intro-playgame-button')) {
-    var player1 = {name: player1NameInput.value};
-    var player2 = {name: player2NameInput.value};
-    var players = [player1, player2];
+    var player1Info = {name: player1.name};
+    var player2Info = {name: player2.name};
+    var players = [player1Info, player2Info];
     var playersString = JSON.stringify(players);
     localStorage.setItem("players", playersString);
   }
 }
 
 function moveToInstructionPage() {
+  var introParentSection = document.getElementById('main-intro-parentsection');
   introParentSection.remove();
   mainParent.innerHTML = `
     <section class="main-instruction-section" id="main-instruction-parentsection">
-      <h2 class="instruction-section-header">WELCOME <span>${player1NameInput.value}</span> AND <span>${player2NameInput.value}</span>!</h2>
-      <div class="instructop-paragraph-background">
+      <h2 class="instruction-section-header">WELCOME <span>${player1.name}</span> and <span>${player2.name}</span>!</h2>
+      <div class="instruction-paragraph-background">
       <p class="instruction-section-paragraph">The goal of the game is to find all 5 pairs of cards as quickly as possible.
       The player that finds the greatest numbers of pairs, wins.</p>
       <p class="instruction-section-paragraph">To begin playing, the player whose name is highlighted can click any card in the card
@@ -79,7 +107,7 @@ function moveToInstructionPage() {
     </section>`;
 }
 
-function instantiateCardAndDeck() {
+function instantiateCardAndDeck(event) {
   if (event.target.classList.contains('instruction-playgame-button')) {
     var cards = [];
     for (var i = 0; i < cardsArray.length; i++) {
@@ -94,11 +122,11 @@ function updateMatchCount() {
   var player1Matches = document.getElementById('player1-matches');
   var player2Matches = document.getElementById('player2-matches');
   if (deck.totalGuesses % 2 === 1) {
-    deck.player1Matches ++;
-    player1Matches.innerText = `${deck.player1Matches}`;
+    player1.matchCount ++;
+    player1Matches.innerText = `${player1.matchCount}`;
   } else {
-    deck.player2Matches ++;
-    player2Matches.innerText = `${deck.player2Matches}`;
+    player2.matchCount ++;
+    player2Matches.innerText = `${player2.matchCount}`;
   }
 }
 
@@ -132,17 +160,27 @@ function createWinnerCard(player) {
   return `
   <div class="winner-card-div">
     <h2 class="winner-card-h2">CONGRATULATIONS!!<h2>
-    <h4 class="winner-card-h4"><span class="winner-card-winner">${player.value}</span> HAS WON THE GAME!!<h4>
+    <h4 class="winner-card-h4"><span class="winner-card-winner">${player}</span> HAS WON THE GAME!!<h4>
     <img class="winner-card-gif" src="https://media.giphy.com/media/cOB8cDnKM6eyY/giphy.gif" alt="gif from Billy Madison saying 'I am the smartest man alive!'" >
     <h6 class="winner-card-h4"> It took you ${gameTime[0]} minutes and ${gameTime[1]} seconds to win!</h6>
+    <button class="play-again-button" id="reset-game-button">PLAY AGAIN</button>
   </div>`;
+}
+
+function resetGame(event) {
+  if (event.target.classList.contains('play-again-button')) {
+    var gamepayParent = document.getElementById('gameplay-parentsection');
+    gamepayParent.remove();
+    createPlayerFormHTML();
+    createScoreCard();
+  }
 }
 
 function addWinnerToLS(winner) {
   var winnersToParse = localStorage.getItem("winner");
   winnersFromLS = JSON.parse(winnersToParse);
   var gameTime = getGameTime();
-  var newWinner = [{name: winner.value, time: gameTime}];
+  var newWinner = [{name: winner, time: gameTime}];
   if (winnersFromLS === null) {
     var winnerToStore = JSON.stringify(newWinner);
     localStorage.setItem("winner", winnerToStore);
@@ -155,18 +193,18 @@ function addWinnerToLS(winner) {
 
 function displayWinner() {
   var cardSection = document.getElementById('card-section');
-  if (deck.matches === 5 && deck.player1Matches > deck.player2Matches) {
+  if (deck.matches === 5 && player1.matchCount > player2.matchCount) {
     removeCardSection();
-    cardSection.innerHTML = createWinnerCard(player1NameInput);
-    addWinnerToLS(player1NameInput);
-  } else if(deck.matches === 5 && deck.player1Matches < deck.player2Matches) {
+    cardSection.innerHTML = createWinnerCard(player1.name);
+    addWinnerToLS(player1.name);
+  } else if(deck.matches === 5 && player1.matchCount < player2.matchCount) {
     removeCardSection();
-    cardSection.innerHTML = createWinnerCard(player2NameInput);
-    addWinnerToLS(player2NameInput);
+    cardSection.innerHTML = createWinnerCard(player2.name);
+    addWinnerToLS(player2.name);
   }
 }
 
-function removeMatchedCards() {
+function removeMatchedCards(event) {
   var cardID = event.target.dataset.id;
   deck.selectedCards.splice(0, 2);
   var cardsToDelete = document.querySelectorAll(`[data-id='${cardID}']`);
@@ -182,13 +220,14 @@ function matchCards() {
     });
     deck.moveToMatched();
     deck.matches ++;
-    removeMatchedCards();
+    removeMatchedCards(event);
     updateMatchCount();
     displayWinner();
+    changeTurnHighlighter();
   }
 }
 
-function flipCard() {
+function flipCard(event) {
   if(event.target.classList.contains('gameplay-card')) {
     var cardID = event.target.dataset.id;
     var cardName = event.target.dataset.name;
@@ -200,13 +239,32 @@ function flipCard() {
         event.target.innerText = "";
         deck.selectedCards = deck.selectedCards.concat(cardSelected);
         matchCards();
-        setTimeout(flipCardOnTimer, 2500);
+        if(deck.selectedCards.length === 2) {
+          setTimeout(flipCardOnTimer, 2000);
+        }
       }
     }
 }
 
+function changeTurnHighlighter() {
+var player1Turn = document.getElementById('player1-turn');
+var player2Turn = document.getElementById('player2-turn');
+  if (deck.totalGuesses % 2 === 1) {
+    player1Turn.classList.remove('player-turn-indicator');
+    player2Turn.classList.add('player-turn-indicator');
+  } else {
+    player2Turn.classList.remove('player-turn-indicator');
+    player1Turn.classList.add('player-turn-indicator');
+  }
+  if(deck.matchedCards.length === 10) {
+    player1Turn.classList.remove('player-turn-indicator');
+    player2Turn.classList.remove('player-turn-indicator');
+  }
+}
+
 function flipCardOnTimer() {
   if (deck.selectedCards.length === 2) {
+    changeTurnHighlighter();
     var cardsFromDOM = document.querySelectorAll('.gameplay-card');
     var cardsFromDOMArr = Array.from(cardsFromDOM);
     var cardsToFlipBack = cardsFromDOMArr.filter(function(array) {
@@ -228,13 +286,17 @@ function getStartTime() {
 }
 
 function showAndRemoveScoreCard() {
-  var scoreBoard = document.getElementById('winner-scoreboard');
-  scoreBoard.classList.toggle('hidden');
+  if("winner" in localStorage) {
+    var scoreBoard = document.getElementById('winner-scoreboard');
+    scoreBoard.classList.toggle('hidden');
+  }
 }
 
 function createScoreCard() {
-  var scoreCardHTML = createScoreCardHTML();
-  headerParent.insertAdjacentHTML('afterbegin', scoreCardHTML);
+  if("winner" in localStorage) {
+    var scoreCardHTML = createScoreCardHTML();
+    headerParent.insertAdjacentHTML('afterbegin', scoreCardHTML);
+  }
 }
 
 function arrangeWinnersFromLS() {
@@ -281,17 +343,17 @@ function createScoreCardHTML() {
       `
 }
 
-function recreateCardsAtRandom() {
+function recreateCardsAtRandom(event) {
   if (event.target.classList.contains('instruction-playgame-button')) {
     deck.shuffle(deck.cards);
     getStartTime();
     var instructionParentSection = document.getElementById('main-instruction-parentsection');
     instructionParentSection.remove();
     mainParent.innerHTML = `
-    <section class="main-gameplay-parentsection">
+    <section class="main-gameplay-parentsection" id="gameplay-parentsection">
       <aside class="gameplay-player-info-section">
         <div class="player-info-name">
-          <p class="player-info-text"><span>${player1NameInput.value}</span></p>
+          <p class="player-info-text player-turn-indicator" id="player1-turn"><span>${player1.name}</span></p>
         </div>
         <div class="player-info-matches">
           <p class="player-info-matches-text">MATCHES THIS ROUND</p>
@@ -321,7 +383,7 @@ function recreateCardsAtRandom() {
       </section>
       <aside class="gameplay-player-info-section">
         <div class="player-info-name">
-          <p class="player-info-text"><span>${player2NameInput.value}</span></p>
+          <p class="player-info-text" id="player2-turn"><span>${player2.name}</span></p>
         </div>
         <div class="player-info-matches">
           <p class="player-info-matches-text">MATCHES THIS ROUND</p>

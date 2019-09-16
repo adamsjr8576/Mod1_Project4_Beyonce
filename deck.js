@@ -5,8 +5,6 @@ class Deck {
     this.selectedCards = [];
     this.matches = 0;
     this.totalGuesses = 0;
-    this.player1Matches = 0;
-    this.player2Matches = 0;
   }
   shuffle(array) {
     for (var i = array.length - 1; i >= 0; i--) {
