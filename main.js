@@ -12,6 +12,7 @@ function clickInMain() {
   makeErrorIfNoName();
   moveToGameplayPage();
   instantiateCardAndDeck();
+  recreateCardsAtRandom()
   flipCard();
 }
 
@@ -80,23 +81,45 @@ function removeCardSection() {
   }
 }
 
+function getGameTime() {
+  var gameTimes = [];
+  var endTime = new Date();
+  var sEnd = endTime.getSeconds();
+  var mEnd = endTime.getMinutes();
+  var totalMin = mEnd - mStart;
+  gameTimes.push(totalMin);
+  var totalSec = (((mEnd * 60) + sEnd) - ((mStart * 60) + sStart));
+  if (totalSec > 60) {
+    var actualSec = totalSec % 60;
+    gameTimes.push(actualSec);
+  }
+  if (totalSec < 60) {
+    gameTimes.push(totalSec);
+  }
+  return gameTimes;
+}
+
 function displayWinner() {
   var cardSection = document.getElementById('card-section');
   if (deck.matches === 5 && deck.player1Matches > deck.player2Matches) {
+    var gameTime = getGameTime();
     removeCardSection();
     cardSection.innerHTML = `
     <div class="winner-card-div">
       <h2 class="winner-card-h2">CONGRATULATIONS!!<h2>
       <h4 class="winner-card-h4"><span class="winner-card-winner">${player1NameInput.value}</span> HAS WON THE GAME!!<h4>
       <img class="winner-card-gif" src="https://media.giphy.com/media/3o7aD4ubUVr8EkgQF2/giphy.gif" alt="gif from Billy Madison saying 'I am the smartest man alive!'" >
+      <h6 class="winner-card-h4"> It took you ${gameTime[0]} minutes and ${gameTime[1]} seconds to win!</h6>
     </div>`;
   } else if(deck.matches === 5 && deck.player1Matches < deck.player2Matches) {
+    var gameTime = getGameTime();
     removeCardSection();
     cardSection.innerHTML = `
     <div class="winner-card-div">
       <h2 class="winner-card-h2">CONGRATULATIONS!!<h2>
       <h4 class="winner-card-h4"><span class="winner-card-winner">${player2NameInput.value}</span> HAS WON THE GAME!!<h4>
-      <img class="winner-card-gif" src="https://media.giphy.com/media/3o7aD4ubUVr8EkgQF2/giphy.gif" alt="gif from Billy Madison saying 'I am the smartest man alive!'" >
+      <img class="winner-card-gif" src="https://media.giphy.com/media/cOB8cDnKM6eyY/giphy.gif" alt="gif from Billy Madison saying 'I am the smartest man alive!'" >
+      <h6 class="winner-card-h4"> It took you ${gameTime[0]} minutes and ${gameTime[1]} seconds to win!</h6>
     </div>`;
   }
 }
@@ -131,12 +154,84 @@ function flipCard() {
         event.target.innerText = "";
         deck.selectedCards = deck.selectedCards.concat(cardSelected);
         matchCards();
-      } else if (event.target.innerText.length < 1) {
-        event.target.classList.remove(`photo${cardID}`);
-        event.target.innerText = "NP";
-        deck.selectedCards.pop();
+        setTimeout(flipCardOntimer, 3000);
       }
     }
+}
+
+function flipCardOntimer() {
+  if (deck.selectedCards.length === 2) {
+    var cardsFromDOM = document.querySelectorAll('.gameplay-card');
+    var cardsFromDOMArr = Array.from(cardsFromDOM);
+    var cardsToFlipBack = cardsFromDOMArr.filter(function(array) {
+      return deck.selectedCards[0].name === array.dataset.name || deck.selectedCards[1].name === array.dataset.name;
+    });
+    for (var i = 0; i < cardsToFlipBack.length; i++) {
+      var cardID = cardsToFlipBack[i].dataset.id;
+      cardsToFlipBack[i].classList.remove(`photo${cardID}`);
+      cardsToFlipBack[i].innerText = "NP";
+      deck.selectedCards.splice(0, 2);
+    }
+  }
+}
+
+function getStartTime() {
+  var startTime = new Date();
+  sStart = startTime.getSeconds();
+  mStart = startTime.getMinutes();
+}
+
+function recreateCardsAtRandom() {
+  if (event.target.classList.contains('instruction-playgame-button')) {
+    deck.shuffle(deck.cards);
+    getStartTime();
+    removeCardSection();
+    mainParent.innerHTML = `
+    <section class="main-gameplay-parentsection">
+      <aside class="gameplay-player-info-section">
+        <div class="player-info-name">
+          <p class="player-info-text"><span>${player1NameInput.value}</span></p>
+        </div>
+        <div class="player-info-matches">
+          <p class="player-info-matches-text">MATCHES THIS ROUND</p>
+          <p><span class="player-info-matches-num" id="player1-matches">0</span></p>
+        </div>
+        <div class="player-info-games-won">
+          <p class="player-info-text"> GAME WINS</p>
+        </div>
+      </aside>
+      <section class="gameplay-card-section" id="card-section">
+        <div class="gameplay-card-div">
+          <div class="gameplay-card position1" data-id='${deck.cards[0].matchInfo}' data-name="${deck.cards[0].name}">NP</div>
+          <div class="gameplay-card position2" data-id='${deck.cards[1].matchInfo}' data-name="${deck.cards[1].name}">NP</div>
+          <div class="gameplay-card position3" data-id='${deck.cards[2].matchInfo}' data-name="${deck.cards[2].name}">NP</div>
+        </div>
+        <div class="gameplay-card-div">
+          <div class="gameplay-card position4" data-id='${deck.cards[3].matchInfo}' data-name="${deck.cards[3].name}">NP</div>
+          <div class="gameplay-card position5" data-id='${deck.cards[4].matchInfo}' data-name="${deck.cards[4].name}">NP</div>
+          <div class="gameplay-card position6" data-id='${deck.cards[5].matchInfo}' data-name="${deck.cards[5].name}">NP</div>
+          <div class="gameplay-card position7" data-id='${deck.cards[6].matchInfo}' data-name="${deck.cards[6].name}">NP</div>
+        </div>
+        <div class="gameplay-card-div">
+          <div class="gameplay-card position8" data-id='${deck.cards[7].matchInfo}' data-name="${deck.cards[7].name}">NP</div>
+          <div class="gameplay-card position9" data-id='${deck.cards[8].matchInfo}' data-name="${deck.cards[8].name}">NP</div>
+          <div class="gameplay-card position10" data-id='${deck.cards[9].matchInfo}' data-name="${deck.cards[9].name}">NP</div>
+        </div>
+      </section>
+      <aside class="gameplay-player-info-section">
+        <div class="player-info-name">
+          <p class="player-info-text"><span>${player2NameInput.value}</span></p>
+        </div>
+        <div class="player-info-matches">
+          <p class="player-info-matches-text">MATCHES THIS ROUND</p>
+          <p><span class="player-info-matches-num" id="player2-matches">0</span></p>
+        </div>
+        <div class="player-info-games-won">
+          <p class="player-info-text"> GAME WINS</p>
+        </div>
+      </aside>
+    </section>`;
+  }
 }
 
 function moveToGameplayPage() {
