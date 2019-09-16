@@ -4,12 +4,16 @@ var playGameButton1 = document.getElementById('intro-playgame-button');
 var introParentSection = document.getElementById('main-intro-parentsection');
 var mainParent = document.getElementById('main-parent');
 var introErrorMessage = document.getElementById('introform-error-message');
+var scoreCardButton = document.getElementById('scorecard-button');
+var headerParent = document.getElementById('header-parent');
 
 mainParent.addEventListener('click', clickInMain);
-
+window.addEventListener('load', createScoreCard);
+scoreCardButton.addEventListener('click', showAndRemoveScoreCard);
 
 function clickInMain() {
   makeErrorIfNoName();
+  saveUserNamesLS();
   moveToGameplayPage();
   instantiateCardAndDeck();
   recreateCardsAtRandom()
@@ -26,6 +30,16 @@ function makeErrorIfNoName() {
     } else {
       moveToInstructionPage();
     }
+  }
+}
+
+function saveUserNamesLS() {
+  if (event.target.classList.contains('intro-playgame-button')) {
+    var player1 = {name: player1NameInput.value};
+    var player2 = {name: player2NameInput.value};
+    var players = [player1, player2];
+    var playersString = JSON.stringify(players);
+    localStorage.setItem("players", playersString);
   }
 }
 
@@ -197,6 +211,59 @@ function getStartTime() {
   var startTime = new Date();
   sStart = startTime.getSeconds();
   mStart = startTime.getMinutes();
+}
+
+function showAndRemoveScoreCard() {
+  var scoreBoard = document.getElementById('winner-scoreboard');
+  scoreBoard.classList.toggle('hidden');
+}
+
+function createScoreCard() {
+  var scoreCardHTML = createScoreCardHTML();
+  headerParent.insertAdjacentHTML('afterbegin', scoreCardHTML);
+}
+
+function arrangeWinnersFromLS() {
+  var winnersFromLS = localStorage.getItem("winner");
+  var winners = JSON.parse(winnersFromLS);
+  for (var i = 0; i < winners.length; i++) {
+    var timeInSec = (winners[i].time[0] * 60 + winners[i].time[1]);
+    winners[i].time = timeInSec;
+  }
+  winners.sort(function(a, b) {
+    return a.time - b.time;
+  });
+  var winnersConvertedArray = convertWinnersTimeToMinSec(winners);
+  return winnersConvertedArray;
+}
+
+function convertWinnersTimeToMinSec(array) {
+  for (var i = 0; i < array.length; i++) {
+    var minutes = Math.floor(array[i].time / 60)
+    var seconds = array[i].time % 60;
+    array[i].time = [];
+    array[i].time.push(minutes);
+    array[i].time.push(seconds);
+  }
+  return array;
+}
+
+function createScoreCardHTML() {
+  var winnersInfo = arrangeWinnersFromLS();
+  var winnerInfoDiv = '';
+  for (var i = 0; i < winnersInfo.length; i++) {
+    winnerInfoDiv += `
+    <div class="winner-scoreboard-div">
+      <p>${winnersInfo[i].name}</p>
+      <p>${winnersInfo[i].time[0]}m ${winnersInfo[i].time[1]}s</p>
+      <p>#${i + 1} Top Player</p>
+    </div>`
+  }
+  return `
+    <section class="winner-scoreboard-section hidden" id="winner-scoreboard">
+      ${winnerInfoDiv}
+    </section>
+    `
 }
 
 function recreateCardsAtRandom() {
