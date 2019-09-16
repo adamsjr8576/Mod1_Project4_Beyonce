@@ -9,7 +9,7 @@ class Deck {
     this.player2Matches = 0;
   }
   shuffle(array) {
-    for (var i = array.length-1; i >= 0; i--) {
+    for (var i = array.length - 1; i >= 0; i--) {
       var randomCard = Math.floor(Math.random()*(i+1));
       var cardIndex = array[randomCard];
       array[randomCard] = array[i];

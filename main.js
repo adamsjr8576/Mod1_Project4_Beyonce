@@ -6,15 +6,32 @@ var mainParent = document.getElementById('main-parent');
 var introErrorMessage = document.getElementById('introform-error-message');
 var scoreCardButton = document.getElementById('scorecard-button');
 var headerParent = document.getElementById('header-parent');
+var cardsArray = [
+  {id: "1", name: "one" },
+  {id: "1", name: "two" },
+  {id: "2", name: "three" },
+  {id: "2", name: "four" },
+  {id: "3", name: "five" },
+  {id: "3", name: "six" },
+  {id: "4", name: "seven" },
+  {id: "4", name: "eight" },
+  {id: "5", name: "nine" },
+  {id: "5", name: "ten" }
+];
 
 mainParent.addEventListener('click', clickInMain);
-window.addEventListener('load', createScoreCard);
+window.addEventListener('load', onPageLoad);
 scoreCardButton.addEventListener('click', showAndRemoveScoreCard);
+
+function onPageLoad() {
+  if("winner" in localStorage) {
+    createScoreCard();
+  }
+}
 
 function clickInMain() {
   makeErrorIfNoName();
   saveUserNamesLS();
-  moveToGameplayPage();
   instantiateCardAndDeck();
   recreateCardsAtRandom()
   flipCard();
@@ -65,11 +82,8 @@ function moveToInstructionPage() {
 function instantiateCardAndDeck() {
   if (event.target.classList.contains('instruction-playgame-button')) {
     var cards = [];
-    var cardsFromDOM = document.querySelectorAll('.gameplay-card');
-    for (var i = 0; i < cardsFromDOM.length; i++) {
-      var cardMatchInfo = cardsFromDOM[i].dataset.id;
-      var cardName = cardsFromDOM[i].dataset.name;
-      var card = new Card(cardMatchInfo, cardName);
+    for (var i = 0; i < cardsArray.length; i++) {
+      var card = new Card(cardsArray[i].id, cardsArray[i].name);
       cards.push(card);
     }
     deck = new Deck(cards);
@@ -186,7 +200,7 @@ function flipCard() {
         event.target.innerText = "";
         deck.selectedCards = deck.selectedCards.concat(cardSelected);
         matchCards();
-        setTimeout(flipCardOnTimer, 4000);
+        setTimeout(flipCardOnTimer, 2500);
       }
     }
 }
@@ -224,17 +238,17 @@ function createScoreCard() {
 }
 
 function arrangeWinnersFromLS() {
-  var winnersFromLS = localStorage.getItem("winner");
-  var winners = JSON.parse(winnersFromLS);
-  for (var i = 0; i < winners.length; i++) {
-    var timeInSec = (winners[i].time[0] * 60 + winners[i].time[1]);
-    winners[i].time = timeInSec;
-  }
-  winners.sort(function(a, b) {
-    return a.time - b.time;
-  });
-  var winnersConvertedArray = convertWinnersTimeToMinSec(winners);
-  return winnersConvertedArray;
+    var winnersFromLS = localStorage.getItem("winner");
+    var winners = JSON.parse(winnersFromLS);
+    for (var i = 0; i < winners.length; i++) {
+      var timeInSec = (winners[i].time[0] * 60 + winners[i].time[1]);
+      winners[i].time = timeInSec;
+    }
+    winners.sort(function(a, b) {
+      return a.time - b.time;
+    });
+    var winnersConvertedArray = convertWinnersTimeToMinSec(winners);
+    return winnersConvertedArray;
 }
 
 function convertWinnersTimeToMinSec(array) {
@@ -249,28 +263,30 @@ function convertWinnersTimeToMinSec(array) {
 }
 
 function createScoreCardHTML() {
-  var winnersInfo = arrangeWinnersFromLS();
-  var winnerInfoDiv = '';
-  for (var i = 0; i < winnersInfo.length; i++) {
-    winnerInfoDiv += `
-    <div class="winner-scoreboard-div">
-      <p>${winnersInfo[i].name}</p>
-      <p>${winnersInfo[i].time[0]}m ${winnersInfo[i].time[1]}s</p>
-      <p>#${i + 1} Top Player</p>
-    </div>`
-  }
-  return `
-    <section class="winner-scoreboard-section hidden" id="winner-scoreboard">
-      ${winnerInfoDiv}
-    </section>
-    `
+    var winnersInfo = arrangeWinnersFromLS();
+    winnersInfo.splice(5, 100);
+    var winnerInfoDiv = '';
+    for (var i = 0; i < winnersInfo.length; i++) {
+      winnerInfoDiv += `
+      <div class="winner-scoreboard-div">
+        <p>${winnersInfo[i].name}</p>
+        <p>${winnersInfo[i].time[0]}m ${winnersInfo[i].time[1]}s</p>
+        <p>#${i + 1} Top Player</p>
+      </div>`
+    }
+    return `
+      <section class="winner-scoreboard-section hidden" id="winner-scoreboard">
+        ${winnerInfoDiv}
+      </section>
+      `
 }
 
 function recreateCardsAtRandom() {
   if (event.target.classList.contains('instruction-playgame-button')) {
     deck.shuffle(deck.cards);
     getStartTime();
-    removeCardSection();
+    var instructionParentSection = document.getElementById('main-instruction-parentsection');
+    instructionParentSection.remove();
     mainParent.innerHTML = `
     <section class="main-gameplay-parentsection">
       <aside class="gameplay-player-info-section">
@@ -316,57 +332,5 @@ function recreateCardsAtRandom() {
         </div>
       </aside>
     </section>`;
-  }
-}
-
-function moveToGameplayPage() {
-  if (event.target.classList.contains('instruction-playgame-button')) {
-  var instructionParentSection = document.getElementById('main-instruction-parentsection');
-  instructionParentSection.remove();
-  mainParent.innerHTML = `
-  <section class="main-gameplay-parentsection">
-    <aside class="gameplay-player-info-section">
-      <div class="player-info-name">
-        <p class="player-info-text"><span>${player1NameInput.value}</span></p>
-      </div>
-      <div class="player-info-matches">
-        <p class="player-info-matches-text">MATCHES THIS ROUND</p>
-        <p><span class="player-info-matches-num" id="player1-matches">0</span></p>
-      </div>
-      <div class="player-info-games-won">
-        <p class="player-info-text"> GAME WINS</p>
-      </div>
-    </aside>
-    <section class="gameplay-card-section" id="card-section">
-      <div class="gameplay-card-div">
-        <div class="gameplay-card position1" data-id='1' data-name="one">NP</div>
-        <div class="gameplay-card position2" data-id='1' data-name="two">NP</div>
-        <div class="gameplay-card position3" data-id='2' data-name="three">NP</div>
-      </div>
-      <div class="gameplay-card-div">
-        <div class="gameplay-card position4" data-id='2' data-name="four">NP</div>
-        <div class="gameplay-card position5" data-id='3' data-name="five">NP</div>
-        <div class="gameplay-card position6" data-id='3' data-name="six">NP</div>
-        <div class="gameplay-card position7" data-id='4' data-name="seven">NP</div>
-      </div>
-      <div class="gameplay-card-div">
-        <div class="gameplay-card position8" data-id='4' data-name="eight">NP</div>
-        <div class="gameplay-card position9" data-id='5' data-name="nine">NP</div>
-        <div class="gameplay-card position10" data-id='5' data-name="ten">NP</div>
-      </div>
-    </section>
-    <aside class="gameplay-player-info-section">
-      <div class="player-info-name">
-        <p class="player-info-text"><span>${player2NameInput.value}</span></p>
-      </div>
-      <div class="player-info-matches">
-        <p class="player-info-matches-text">MATCHES THIS ROUND</p>
-        <p><span class="player-info-matches-num" id="player2-matches">0</span></p>
-      </div>
-      <div class="player-info-games-won">
-        <p class="player-info-text"> GAME WINS</p>
-      </div>
-    </aside>
-  </section>`;
   }
 }
