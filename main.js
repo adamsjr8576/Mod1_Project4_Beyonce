@@ -99,44 +99,45 @@ function getGameTime() {
   return gameTimes;
 }
 
+function createWinnerCard(player) {
+  var gameTime = getGameTime();
+  return `
+  <div class="winner-card-div">
+    <h2 class="winner-card-h2">CONGRATULATIONS!!<h2>
+    <h4 class="winner-card-h4"><span class="winner-card-winner">${player.value}</span> HAS WON THE GAME!!<h4>
+    <img class="winner-card-gif" src="https://media.giphy.com/media/cOB8cDnKM6eyY/giphy.gif" alt="gif from Billy Madison saying 'I am the smartest man alive!'" >
+    <h6 class="winner-card-h4"> It took you ${gameTime[0]} minutes and ${gameTime[1]} seconds to win!</h6>
+  </div>`;
+}
+
 function displayWinner() {
   var cardSection = document.getElementById('card-section');
   if (deck.matches === 5 && deck.player1Matches > deck.player2Matches) {
-    var gameTime = getGameTime();
     removeCardSection();
-    cardSection.innerHTML = `
-    <div class="winner-card-div">
-      <h2 class="winner-card-h2">CONGRATULATIONS!!<h2>
-      <h4 class="winner-card-h4"><span class="winner-card-winner">${player1NameInput.value}</span> HAS WON THE GAME!!<h4>
-      <img class="winner-card-gif" src="https://media.giphy.com/media/3o7aD4ubUVr8EkgQF2/giphy.gif" alt="gif from Billy Madison saying 'I am the smartest man alive!'" >
-      <h6 class="winner-card-h4"> It took you ${gameTime[0]} minutes and ${gameTime[1]} seconds to win!</h6>
-    </div>`;
+    cardSection.innerHTML = createWinnerCard(player1NameInput);
   } else if(deck.matches === 5 && deck.player1Matches < deck.player2Matches) {
-    var gameTime = getGameTime();
     removeCardSection();
-    cardSection.innerHTML = `
-    <div class="winner-card-div">
-      <h2 class="winner-card-h2">CONGRATULATIONS!!<h2>
-      <h4 class="winner-card-h4"><span class="winner-card-winner">${player2NameInput.value}</span> HAS WON THE GAME!!<h4>
-      <img class="winner-card-gif" src="https://media.giphy.com/media/cOB8cDnKM6eyY/giphy.gif" alt="gif from Billy Madison saying 'I am the smartest man alive!'" >
-      <h6 class="winner-card-h4"> It took you ${gameTime[0]} minutes and ${gameTime[1]} seconds to win!</h6>
-    </div>`;
+    cardSection.innerHTML = createWinnerCard(player2NameInput);
   }
 }
 
-function matchCards() {
+function removeMatchedCards() {
   var cardID = event.target.dataset.id;
+  deck.selectedCards.splice(0, 2);
+  var cardsToDelete = document.querySelectorAll(`[data-id='${cardID}']`);
+  cardsToDelete.forEach(function(card) {
+    card.classList.add('hidden');
+  });
+}
+
+function matchCards() {
   if (deck.selectedCards.length === 2 && deck.checkSelectedCards() === true) {
     deck.selectedCards.forEach(function(card) {
       card.match();
     });
     deck.moveToMatched();
     deck.matches ++;
-    deck.selectedCards.splice(0, 2);
-    var cardsToDelete = document.querySelectorAll(`[data-id='${cardID}']`);
-    cardsToDelete.forEach(function(card) {
-      card.classList.add('hidden');
-    });
+    removeMatchedCards();
     updateMatchCount();
     displayWinner();
   }
@@ -154,12 +155,12 @@ function flipCard() {
         event.target.innerText = "";
         deck.selectedCards = deck.selectedCards.concat(cardSelected);
         matchCards();
-        setTimeout(flipCardOntimer, 3000);
+        setTimeout(flipCardOnTimer, 4000);
       }
     }
 }
 
-function flipCardOntimer() {
+function flipCardOnTimer() {
   if (deck.selectedCards.length === 2) {
     var cardsFromDOM = document.querySelectorAll('.gameplay-card');
     var cardsFromDOMArr = Array.from(cardsFromDOM);

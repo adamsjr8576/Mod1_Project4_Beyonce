@@ -217,6 +217,9 @@ margin-bottom: 75px;
   font-weight: 700;
   border: 2px solid black;
   background-color: white;
+  transition: transform .5s;
+  transform-style: preserve-3d;
+
 }
 
 .hidden {
@@ -268,30 +271,35 @@ margin-bottom: 75px;
   background-image: url('images/CNP.jpg');
   background-position: center;
   background-size: cover;
+  transform: rotateY(180deg);
 }
 
 .photo2 {
   background-image: url('images/GSMNP.jpg');
   background-position: center;
   background-size: cover;
+  transform: rotateY(180deg);
 }
 
 .photo3 {
   background-image: url('images/LVNP.jpg');
   background-position: center;
   background-size: cover;
+  transform: rotateY(180deg);
 }
 
 .photo4 {
   background-image: url('images/RMNP.jpg');
   background-position: center;
   background-size: cover;
+  transform: rotateY(180deg);
 }
 
 .photo5 {
   background-image: url('images/ZNP.jpg');
   background-position: center;
   background-size: cover;
+  transform: rotateY(180deg);
 }
 
 /* WINNER CARD */
