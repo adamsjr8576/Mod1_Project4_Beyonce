@@ -14,7 +14,7 @@
 
 ## General-Info
 
-<img src="screenshot7.png" alt="Intro page to Which National Park">
+<img src="images/screenshot7.png" alt="Intro page to Which National Park">
 
 The purpose for this project was to implement the cumulative knowledge and skills we have learned throughout Mod 1 at Turing in a single overarching project. This project focused on fine tuning our ability to handle and manipulate complex data types such as arrays and objects via tools like array prototype methods and classes. Coupling these skills with knowledge of local storage made it possible to have a game and date persist on page load. As I final solo project the project is meant to reflect our skillset and current knowledge and place within Mod 1.
 
