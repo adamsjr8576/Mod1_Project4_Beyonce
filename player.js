@@ -6,7 +6,4 @@ class Player {
   resetMatchCount () {
     this.matchCount = 0;
   }
-  // findMatch() {
-  //
-  // }
 }

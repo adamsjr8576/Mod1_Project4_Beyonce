@@ -29,6 +29,7 @@ function clickInMain() {
   instantiateCardAndDeck(event);
   removeInstructionParent(event);
   recreateCardsAtRandom(event);
+  getWinnersHistory(event);
   determineTopPLayer();
   flipCard(event);
   resetGame(event);
@@ -182,6 +183,7 @@ function rematchSetUp(event) {
     gameplayParent.remove();
     instantiateCardAndDeck(event);
     recreateCardsAtRandom(event);
+    getWinnersHistory(event);
     createScoreCard();
     determineTopPLayer();
     player1.resetMatchCount();
@@ -311,14 +313,14 @@ function getStartTime() {
 }
 
 function showAndRemoveScoreCard() {
-  if("winner" in localStorage) {
+  if ("winner" in localStorage) {
     var scoreBoard = document.getElementById('winner-scoreboard');
     scoreBoard.classList.toggle('hidden');
   }
 }
 
 function createScoreCard() {
-  if("winner" in localStorage) {
+  if ("winner" in localStorage) {
     var scoreCardHTML = createScoreCardHTML();
     headerParent.insertAdjacentHTML('afterbegin', scoreCardHTML);
   }
@@ -408,6 +410,43 @@ function removeInstructionParent(event  ) {
   }
 }
 
+function createPlayerHistoryHTML(array) {
+  playerHistoryHTML = '';
+  if (array.length > 0) {
+    for (var i = 0; i < array.length; i++) {
+      playerHistoryHTML += `
+      <div class="player-history-div">
+        <p>${array[i].name}</p>
+        <p>${array[i].time[0]}m - ${array[i].time[1]}s</p>
+      </div>
+      `
+    }
+  }
+  return playerHistoryHTML;
+}
+
+function getPLayerHistory(array, player) {
+  playerHistoryWins = array.filter(function(winner) {
+    return winner.name === player.name
+  });
+  return playerHistoryWins
+}
+
+function getWinnersHistory(event) {
+  if (event.target.classList.contains('instruction-playgame-button') ||
+      event.target.classList.contains('rematch-button')) {
+    var player1HistoryParent = document.getElementById('player1-history');
+    var player2HistoryParent = document.getElementById('player2-history');
+    var winners = arrangeWinnersFromLS();
+    var player1History = getPLayerHistory(winners, player1);
+    var player2History = getPLayerHistory(winners, player2);
+    var player1HistoryHTML = createPlayerHistoryHTML(player1History);
+    var player2HistoryHTML = createPlayerHistoryHTML(player2History);
+    player1HistoryParent.insertAdjacentHTML('beforeend', player1HistoryHTML);
+    player2HistoryParent.insertAdjacentHTML('beforeend', player2HistoryHTML);
+  }
+}
+
 function recreateCardsAtRandom(event) {
   if (event.target.classList.contains('instruction-playgame-button') ||
       event.target.classList.contains('rematch-button')) {
@@ -423,7 +462,7 @@ function recreateCardsAtRandom(event) {
           <p class="player-info-matches-text">MATCHES THIS ROUND</p>
           <p><span class="player-info-matches-num" id="player1-matches">0</span></p>
         </div>
-        <div class="player-info-games-won">
+        <div class="player-info-games-won" id="player1-history">
           <p class="player-info-text"> GAME WINS</p>
         </div>
       </aside>
@@ -453,7 +492,7 @@ function recreateCardsAtRandom(event) {
           <p class="player-info-matches-text">MATCHES THIS ROUND</p>
           <p><span class="player-info-matches-num" id="player2-matches">0</span></p>
         </div>
-        <div class="player-info-games-won">
+        <div class="player-info-games-won" id="player2-history">
           <p class="player-info-text"> GAME WINS</p>
         </div>
       </aside>

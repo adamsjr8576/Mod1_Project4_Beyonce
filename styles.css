@@ -206,6 +206,7 @@ width: 100%;
   margin: 10px 0;
   text-align: center;
   width: 90%;
+  overflow: auto;
 }
 
 /* CARD SECTION */
@@ -442,4 +443,14 @@ width: 100%;
   height: 20%;
   text-align: center;
   width: 90%;
+}
+
+/* WINNER HISTORY */
+
+.player-history-div {
+  width: 95%;
+  margin: auto;
+  font-size: 75%;
+  padding: 10px;
+  border-bottom: 1px solid white;
 }
