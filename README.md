@@ -3,7 +3,7 @@
 
 ## Table of Contents
 
-* [General Info](#General Info)
+* [General Info](#General-Info)
 * [Background](#Background)
 * [Built With](#Built-With)
 * [Screenshots](#Screenshots)
@@ -12,33 +12,31 @@
 * [Setup](#Setup)
 * [License](#License)
 
-## General Info
+## General-Info
 
-<img src="images/number-guesser-logo.png" alt="Number Guesser Logo">
+<img src="screenshot7.png" alt="Intro page to Which National Park">
 
-The purpose for this project was to practice HTML, CSS, and JavaScript for the Front-End Engineering course at Turing during Module 1.
+The purpose for this project was to implement the cumulative knowledge and skills we have learned throughout Mod 1 at Turing in a single overarching project. This project focused on fine tuning our ability to handle and manipulate complex data types such as arrays and objects via tools like array prototype methods and classes. Coupling these skills with knowledge of local storage made it possible to have a game and date persist on page load. As I final solo project the project is meant to reflect our skillset and current knowledge and place within Mod 1.
 
 ## Background
 
-For this project, we were given a static comp that we had to recreate using HTML and CSS.  We were then given a list of behaviors that the site was expected to have in order for the game to follow a set of rules.  See the comp <a href="https://frontend.turing.io/assets/images/projects/number-guesser/week2-numberguesser-01.jpg">here</a>.
+For the project, we were given a static visual comp, but then also given the freedom to create and use our own content and theme for the project. The game is based off of the classic memory card game - where cards are randomly shuffled and laid face down. The player then gets to flip over two cards for a select amount of time before flipping them back over. if you get a pair then you get a point and the player with the most pairs wins.
 
 Behaviors:
 
-- Users must be able to define a range for their guess using the max and min fields. Update button must update the listed range, and must not work when either input contains a non-numerical value, and must show an error if the max is smaller than the min.
+- There must be two player names inputted in order to move on to the instructions page. 
 
-- A random number must be generated when the update button is clicked.
+- Read the instructions page and then select play game to initiate gameplay.
 
-- Each player must have an input field for adding their name and their guess. Clicking the submit button will add each player name and guess to a cards below them.  The submit button will not work if the forms aren't filled out, and an error is displayed if a field is blank or if a guess falls outside the specified range.
+- 10 cards are displayed at random that represents 5 pairs.
 
-- The score cards must populate with the names and guesses entered into the fields and submitted. If the player's guess is below the randomly chosen number, the score card must indicate that the guess is too low.  If the guess higher than the randomly chosen number, the score card must indicate that the guess is too high.
+- PLayer that goes first is higlighted in blue
 
-- If a player guesses the randomly chosen number, the scorecard must indicate that the user won.  When a player wins, a winner card displays on the right.  The range is automatically expanded by 10 on each side, unless the min is already below 10.
+- Whoever's turn it is then selects two cards that flip to the photo side for 2 seconds before automatically flipping back. They can only select two at a time. If it is a match then the matched cards dissappear and that players matches increases by one.
 
-- The clear guess button must clear the name and guess fields.  The reset button must clear the whole game and generate a new random number.
+- One all 5 matches are made the player with the most matches wins the game and is rewarded with a Congrats message.
 
-- As players continue to win, new cards must appear to the right.  The x button on each card must make the card disappear.
-
-- The site must be responsive down to a width of 320px.
+- The players then have the option to start over - which brings them back to the player input state OR rematch where their information is kept and the cards are reshuffled and they are brought back to the gameplay state.
 
 ## Built-With
 
@@ -48,27 +46,48 @@ Behaviors:
 
 ## Screenshots
 
-<img src="images/minmax-error-state.png" alt="Min/Max error state">
-<img src="images/guess-error-state.png" alt="Guess error state">
-<img src="images/winner-display.png" alt="Winner Display">
+<img src="images/screenshot6.png" alt="visual of project state">
+<img src="images/screenshot5.png" alt="visual of project state">
+<img src="images/screenshot4.png" alt="visual of project state">
+<img src="images/screenshot3.png" alt="visual of project state">
+<img src="images/screenshot2.png" alt="visual of project state">
+<img src="images/screenshot1.png" alt="visual of project state">
 
 ## How-to-Use
 
-- Set the range for the random number to fall within.  A random number will be generated when you click 'update.'
-- Fill out your name and your guess in the indicated forms.  Click submit.
-- The score cards will tell you if your guess is too high or too low.  Clear your guesses, adjust what you think the number is based on the feedback, and click submit again.
-- Once a correct guess has been made, reset the game to expand the range.  Start guessing again!
+
+- There must be two player names inputted in order to move on to the instructions page. 
+
+- Read the instructions page and then select play game to initiate gameplay.
+
+- 10 cards are displayed at random that represents 5 pairs.
+
+- PLayer that goes first is higlighted in blue
+
+- Whoever's turn it is then selects two cards that flip to the photo side for 2 seconds before automatically flipping back. They can only select two at a time. If it is a match then the matched cards dissappear and that players matches increases by one.
+
+- One all 5 matches are made the player with the most matches wins the game and is rewarded with a Congrats message.
+
+- The players then have the option to start over - which brings them back to the player input state OR rematch where their information is kept and the cards are reshuffled and they are brought back to the gameplay state.
 
 ## Features
 
-- [x] Altering page content via input field (JS)
-- [x] Responsive (CSS Media Query for navigation and page columns)
-- [x] Generating random number through JS, comparison of number to inputs
+- [x] game viable for two players
+- [x] nav icon contains the top 5 players based on game time. persists on page load.
+- [x] if a player is in the top 5 a trophy is next to their name.
+- [x] if a player has won befor that information is stored beneath their name
+- [x] the game tracks the gameplay time
+- [x] you can reset game or restart game at the end of each round.
+- [x] there are 10 photos (20 potential cards) that are cycled through each game for greater difficulty
+
+
+
+
 
 
 ## Setup
 
-Access the site <a href="https://adamsjr8576.github.io/Project2_NumberGuesser/">here.</a>
+Access the site... coming soon
 
 ## License
 
