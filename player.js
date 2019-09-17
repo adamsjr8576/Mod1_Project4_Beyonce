@@ -3,6 +3,9 @@ class Player {
     this.name = name;
     this.matchCount = 0;
   }
+  resetMatchCount () {
+    this.matchCount = 0;
+  }
   // findMatch() {
   //
   // }

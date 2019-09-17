@@ -2,16 +2,16 @@ var mainParent = document.getElementById('main-parent');
 var scoreCardButton = document.getElementById('scorecard-button');
 var headerParent = document.getElementById('header-parent');
 var cardsArray = [
-  {id: "1", name: "one" },
-  {id: "1", name: "two" },
-  {id: "2", name: "three" },
-  {id: "2", name: "four" },
-  {id: "3", name: "five" },
-  {id: "3", name: "six" },
-  {id: "4", name: "seven" },
-  {id: "4", name: "eight" },
-  {id: "5", name: "nine" },
-  {id: "5", name: "ten" }
+  {id: "1", name: "card1-0"},
+  {id: "2", name: "card2-0"},
+  {id: "3", name: "card3-0"},
+  {id: "4", name: "card4-0"},
+  {id: "5", name: "card5-0"},
+  {id: "6", name: "card6-0"},
+  {id: "7", name: "card7-0"},
+  {id: "8", name: "card8-0"},
+  {id: "9", name: "card9-0"},
+  {id: "10", name: "card10-0"}
 ];
 
 mainParent.addEventListener('click', clickInMain);
@@ -27,9 +27,12 @@ function clickInMain() {
   makeErrorIfNoName(event);
   saveUserNamesLS(event);
   instantiateCardAndDeck(event);
-  recreateCardsAtRandom(event)
+  removeInstructionParent(event);
+  recreateCardsAtRandom(event);
+  determineTopPLayer();
   flipCard(event);
   resetGame(event);
+  rematchSetUp(event);
 }
 
 function createPlayerFormHTML() {
@@ -108,7 +111,8 @@ function moveToInstructionPage() {
 }
 
 function instantiateCardAndDeck(event) {
-  if (event.target.classList.contains('instruction-playgame-button')) {
+  if (event.target.classList.contains('instruction-playgame-button') ||
+      event.target.classList.contains('rematch-button')) {
     var cards = [];
     for (var i = 0; i < cardsArray.length; i++) {
       var card = new Card(cardsArray[i].id, cardsArray[i].name);
@@ -142,14 +146,16 @@ function getGameTime() {
   var endTime = new Date();
   var sEnd = endTime.getSeconds();
   var mEnd = endTime.getMinutes();
-  var totalMin = mEnd - mStart;
-  gameTimes.push(totalMin);
   var totalSec = (((mEnd * 60) + sEnd) - ((mStart * 60) + sStart));
   if (totalSec > 60) {
+    var actualMin = Math.floor(totalSec / 60);
     var actualSec = totalSec % 60;
+    gameTimes.push(actualMin);
     gameTimes.push(actualSec);
   }
   if (totalSec < 60) {
+    var actualMin = 0;
+    gameTimes.push(actualMin);
     gameTimes.push(totalSec);
   }
   return gameTimes;
@@ -163,14 +169,31 @@ function createWinnerCard(player) {
     <h4 class="winner-card-h4"><span class="winner-card-winner">${player}</span> HAS WON THE GAME!!<h4>
     <img class="winner-card-gif" src="https://media.giphy.com/media/cOB8cDnKM6eyY/giphy.gif" alt="gif from Billy Madison saying 'I am the smartest man alive!'" >
     <h6 class="winner-card-h4"> It took you ${gameTime[0]} minutes and ${gameTime[1]} seconds to win!</h6>
-    <button class="play-again-button" id="reset-game-button">PLAY AGAIN</button>
+    <div class="end-of-game-option-div">
+      <button class="play-again-button reset-button" id="reset-game-button">RESET GAME</button>
+      <button class="play-again-button rematch-button" id="rematch-game-button">REMATCH</button>
+    </div
   </div>`;
 }
 
+function rematchSetUp(event) {
+  if (event.target.classList.contains('rematch-button')) {
+    var gameplayParent = document.getElementById('gameplay-parentsection');
+    gameplayParent.remove();
+    instantiateCardAndDeck(event);
+    recreateCardsAtRandom(event);
+    createScoreCard();
+    determineTopPLayer();
+    player1.resetMatchCount();
+    player2.resetMatchCount();
+  }
+
+}
+
 function resetGame(event) {
-  if (event.target.classList.contains('play-again-button')) {
-    var gamepayParent = document.getElementById('gameplay-parentsection');
-    gamepayParent.remove();
+  if (event.target.classList.contains('reset-button')) {
+    var gameplayParent = document.getElementById('gameplay-parentsection');
+    gameplayParent.remove();
     createPlayerFormHTML();
     createScoreCard();
   }
@@ -213,7 +236,7 @@ function removeMatchedCards(event) {
   });
 }
 
-function matchCards() {
+function matchCards(event) {
   if (deck.selectedCards.length === 2 && deck.checkSelectedCards() === true) {
     deck.selectedCards.forEach(function(card) {
       card.match();
@@ -238,7 +261,9 @@ function flipCard(event) {
         event.target.classList.add(`photo${cardID}`);
         event.target.innerText = "";
         deck.selectedCards = deck.selectedCards.concat(cardSelected);
-        matchCards();
+        if(deck.selectedCards.length === 2) {
+          setTimeout(matchCards, 1000, event);
+        }
         if(deck.selectedCards.length === 2) {
           setTimeout(flipCardOnTimer, 2000);
         }
@@ -299,6 +324,27 @@ function createScoreCard() {
   }
 }
 
+function givePlayer1Trophy(array, playerName, playerText) {
+  for (var i = 0; i < array.length; i++) {
+    if (array[i].name === playerName.name) {
+      playerText.innerText += '  🏆';
+      return;
+    }
+  }
+}
+
+function determineTopPLayer() {
+  if (event.target.classList.contains('instruction-playgame-button') ||
+      event.target.classList.contains('rematch-button')) {
+    var player1Text = document.getElementById('player1-turn');
+    var player2Text = document.getElementById('player2-turn');
+    var winnersArray = arrangeWinnersFromLS();
+    winnersArray.splice(5, 100);
+    givePlayer1Trophy(winnersArray, player1, player1Text);
+    givePlayer1Trophy(winnersArray, player2, player2Text);
+  }
+}
+
 function arrangeWinnersFromLS() {
     var winnersFromLS = localStorage.getItem("winner");
     var winners = JSON.parse(winnersFromLS);
@@ -343,12 +389,30 @@ function createScoreCardHTML() {
       `
 }
 
-function recreateCardsAtRandom(event) {
-  if (event.target.classList.contains('instruction-playgame-button')) {
-    deck.shuffle(deck.cards);
-    getStartTime();
+function shuffleImagesForGameplay() {
+  deck.shuffle(deck.cards);
+  deck.cards.splice(0, 5);
+  var cardsForGameplay = [];
+  for (var i = 0; i < deck.cards.length; i++) {
+    var card = new Card(deck.cards[i].matchInfo, deck.cards[i].name + 1);
+    cardsForGameplay.push(card);
+  }
+  deck.cards = deck.cards.concat(cardsForGameplay);
+  deck.shuffle(deck.cards);
+}
+
+function removeInstructionParent(event  ) {
+  if(event.target.classList.contains('instruction-playgame-button')) {
     var instructionParentSection = document.getElementById('main-instruction-parentsection');
     instructionParentSection.remove();
+  }
+}
+
+function recreateCardsAtRandom(event) {
+  if (event.target.classList.contains('instruction-playgame-button') ||
+      event.target.classList.contains('rematch-button')) {
+    shuffleImagesForGameplay();
+    getStartTime();
     mainParent.innerHTML = `
     <section class="main-gameplay-parentsection" id="gameplay-parentsection">
       <aside class="gameplay-player-info-section">
