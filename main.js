@@ -99,10 +99,10 @@ function moveToInstructionPage() {
       <h2 class="instruction-section-header">WELCOME <span>${player1.name}</span> and <span>${player2.name}</span>!</h2>
       <div class="instruction-paragraph-background">
       <p class="instruction-section-paragraph">The goal of the game is to find all 5 pairs of cards as quickly as possible.
-      The player that finds the greatest numbers of pairs, wins.</p>
+      The player that finds the greatest number of pairs, wins.</p>
       <p class="instruction-section-paragraph">To begin playing, the player whose name is highlighted can click any card in the card
-      pile. It will flip over and reveal a picture of Beyonce. Click another card. If they match, they will disappear and you will
-      have completed a match! If they don't, you'll have three seconds to look at them before they flip back over. Then it's time
+      pile. It will flip over and reveal a picture of a beautiful landscape. Click another card. If they match, they will disappear and you will
+      have completed a match! If they don't, you'll have two seconds to look at them before they flip back over. Then it's time
       for the other player to try!</p>
       <p class="instruction-section-paragraph">After youy play, you'll see the name of the final winnner and how long it took to
       win the game.</p>
@@ -270,7 +270,7 @@ function flipCard(event) {
           setTimeout(flipCardOnTimer, 2000);
         }
       }
-    }
+  }
 }
 
 function changeTurnHighlighter() {
@@ -373,22 +373,22 @@ function convertWinnersTimeToMinSec(array) {
 }
 
 function createScoreCardHTML() {
-    var winnersInfo = arrangeWinnersFromLS();
-    winnersInfo.splice(5, 100);
-    var winnerInfoDiv = '';
-    for (var i = 0; i < winnersInfo.length; i++) {
-      winnerInfoDiv += `
-      <div class="winner-scoreboard-div">
-        <p>${winnersInfo[i].name}</p>
-        <p>${winnersInfo[i].time[0]}m ${winnersInfo[i].time[1]}s</p>
-        <p>#${i + 1} Top Player</p>
-      </div>`
-    }
-    return `
-      <section class="winner-scoreboard-section hidden" id="winner-scoreboard">
-        ${winnerInfoDiv}
-      </section>
-      `
+  var winnersInfo = arrangeWinnersFromLS();
+  winnersInfo.splice(5, 100);
+  var winnerInfoDiv = '';
+  for (var i = 0; i < winnersInfo.length; i++) {
+    winnerInfoDiv += `
+    <div class="winner-scoreboard-div">
+      <p>${winnersInfo[i].name}</p>
+      <p>${winnersInfo[i].time[0]}m ${winnersInfo[i].time[1]}s</p>
+      <p>#${i + 1} Top Player</p>
+    </div>`
+  }
+  return `
+    <section class="winner-scoreboard-section hidden" id="winner-scoreboard">
+      ${winnerInfoDiv}
+    </section>
+    `
 }
 
 function shuffleImagesForGameplay() {
