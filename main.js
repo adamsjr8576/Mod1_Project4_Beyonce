@@ -336,18 +336,21 @@ function givePlayer1Trophy(array, playerName, playerText) {
 }
 
 function determineTopPLayer() {
-  if (event.target.classList.contains('instruction-playgame-button') ||
-      event.target.classList.contains('rematch-button')) {
-    var player1Text = document.getElementById('player1-turn');
-    var player2Text = document.getElementById('player2-turn');
-    var winnersArray = arrangeWinnersFromLS();
-    winnersArray.splice(5, 100);
-    givePlayer1Trophy(winnersArray, player1, player1Text);
-    givePlayer1Trophy(winnersArray, player2, player2Text);
+  if ("winner" in localStorage) {
+    if (event.target.classList.contains('instruction-playgame-button') ||
+        event.target.classList.contains('rematch-button')) {
+      var player1Text = document.getElementById('player1-turn');
+      var player2Text = document.getElementById('player2-turn');
+      var winnersArray = arrangeWinnersFromLS();
+      winnersArray.splice(5, 100);
+      givePlayer1Trophy(winnersArray, player1, player1Text);
+      givePlayer1Trophy(winnersArray, player2, player2Text);
+    }
   }
 }
 
 function arrangeWinnersFromLS() {
+  if ("winner" in localStorage) {
     var winnersFromLS = localStorage.getItem("winner");
     var winners = JSON.parse(winnersFromLS);
     for (var i = 0; i < winners.length; i++) {
@@ -359,6 +362,7 @@ function arrangeWinnersFromLS() {
     });
     var winnersConvertedArray = convertWinnersTimeToMinSec(winners);
     return winnersConvertedArray;
+  }
 }
 
 function convertWinnersTimeToMinSec(array) {
@@ -433,17 +437,19 @@ function getPLayerHistory(array, player) {
 }
 
 function getWinnersHistory(event) {
-  if (event.target.classList.contains('instruction-playgame-button') ||
-      event.target.classList.contains('rematch-button')) {
-    var player1HistoryParent = document.getElementById('player1-history');
-    var player2HistoryParent = document.getElementById('player2-history');
-    var winners = arrangeWinnersFromLS();
-    var player1History = getPLayerHistory(winners, player1);
-    var player2History = getPLayerHistory(winners, player2);
-    var player1HistoryHTML = createPlayerHistoryHTML(player1History);
-    var player2HistoryHTML = createPlayerHistoryHTML(player2History);
-    player1HistoryParent.insertAdjacentHTML('beforeend', player1HistoryHTML);
-    player2HistoryParent.insertAdjacentHTML('beforeend', player2HistoryHTML);
+  if ("winner" in localStorage) {
+    if (event.target.classList.contains('instruction-playgame-button') ||
+        event.target.classList.contains('rematch-button')) {
+      var player1HistoryParent = document.getElementById('player1-history');
+      var player2HistoryParent = document.getElementById('player2-history');
+      var winners = arrangeWinnersFromLS();
+      var player1History = getPLayerHistory(winners, player1);
+      var player2History = getPLayerHistory(winners, player2);
+      var player1HistoryHTML = createPlayerHistoryHTML(player1History);
+      var player2HistoryHTML = createPlayerHistoryHTML(player2History);
+      player1HistoryParent.insertAdjacentHTML('beforeend', player1HistoryHTML);
+      player2HistoryParent.insertAdjacentHTML('beforeend', player2HistoryHTML);
+    }
   }
 }
 
